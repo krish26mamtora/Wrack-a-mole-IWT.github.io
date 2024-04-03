@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack-A-Mole</title>
+    <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+    <div id="board"></div>
+    <audio id="moleSound" src="mixkit-bubble-pop-up-alert-notification-2357.wav"></audio>
+    <audio id="error" src="error-126627.mp3"></audio>
+    <!-- <audio id="molestart" src="starting.mp3"></audio> -->
+    <audio id="moleend" src="ending.mp3"></audio>
+    <audio id="corr" src="ding.mp3"></audio>
+    <!-- <audio id="wrong" src="peep.mp3"></audio> -->
+
+
+    <div id="container">
+        <div id="clock" class="clock"></div>
+        <div id="score">Score: 0</div>
+        <button id="startButton">Start</button>
+
+    </div>
+
+    
+    <script>
+        
+let currmoletile;
+let currplanttile;
+let score = 0;
+let gameover = false;
+let startTime = new Date().getTime(); // Store the start time
+// let moletime = 1000;
+let timeLimit = 30; 
+let timerInterval; 
+
+
+function setgame(moletime) {
+    for (let i = 0; i < 9; i++) {
+        let tile = document.createElement("div");
+        tile.id = i.toString();
+        tile.addEventListener("click", selecttile);
+        document.getElementById("board").appendChild(tile);
+    }
+    setInterval(setmole, moletime);
+    console.log(moletime);
+    setInterval(setplant, moletime);
+}
+
+function getrandomtile() {
+    let num = Math.floor(Math.random() * 9);
+    return num.toString();
+}
+
+function setmole() {
+    if (gameover) {
+        return;
+    }
+    if (currmoletile) {
+        currmoletile.innerHTML = "";
+    }
+    let mole = document.createElement("img");
+    mole.src = "./monty-mole.png";
+    let num = getrandomtile();
+    if (currplanttile && currplanttile.id == num) {
+        return;   //overlap condition
+    }
+    currmoletile = document.getElementById(num);
+    currmoletile.appendChild(mole);
+   
+}
+
+function setplant() {
+    if (gameover) {
+        return;
+    }
+    if (currplanttile) {
+        currplanttile.innerHTML = "";
+    }
+    let plant = document.createElement("img");
+    plant.src = "./piranha-plant.png";
+    let num = getrandomtile();
+    if (currmoletile && currmoletile.id == num) {
+        return;
+    }
+    currplanttile = document.getElementById(num);
+    currplanttile.appendChild(plant);
+    // let moleSound = document.getElementById("wrong");
+    // moleSound.play();
+}
+
+function selecttile() {
+    if (gameover) {
+        return;
+    }
+    // console.log(this)
+    if (this == currmoletile) {
+        score += 10;
+        let moleSound = document.getElementById("corr");
+    moleSound.play();
+        document.getElementById("score").innerText = "Score: " + score.toString();
+        currmoletile.innerHTML = "";
+    } else if (this == currplanttile) {
+        let moleSound = document.getElementById("error");
+        moleSound.play();
+        endGame();
+    }
+}
+
+function startTimer() {
+    let clock = document.getElementById("clock");
+    timerInterval = setInterval(function () {
+
+        let currentTime = new Date().getTime();  // number of milisecods from January 1, 1970
+        console.log(currentTime)
+        let elapsedTime = Math.floor((currentTime - startTime) / 1000);
+        console.log(elapsedTime)
+        
+        let remainingTime = timeLimit - elapsedTime;
+
+        if (remainingTime >= 0) {
+            let minutes = Math.floor(remainingTime / 60);
+            console.log(minutes)
+
+            let seconds = remainingTime % 60;
+            console.log(seconds)
+            clock.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        } else {
+            clock.innerHTML = "00:00";
+            endGame();
+        }
+    }, 1000);
+}
+function endGame() {
+            gameover = true;
+            clearInterval(timerInterval);
+
+            let modalContent = 
+            `<div id="modal" style="text-align: center;">
+                    <h2>Game Over!</h2>
+                    <p id="fullfinalscore">Your final score is: <span id="finalScore">${score}</span></p>
+                    <button id="resetButton">Restart</button>
+                    <button id="ExitButton">Exit</button>
+
+                </div>`;
+            document.getElementById("container").innerHTML = modalContent;
+
+            document.getElementById("resetButton").addEventListener("click", function() {
+                window.location.reload(); // Reload the page to reset the game
+            });
+            
+            document.getElementById("ExitButton").addEventListener("click", function() {
+                window.location.href = 'index.html';
+            });
+        }
+
+
+// function startGame(moletime) {
+//     console.log(moletime);
+
+//     setgame(moletime);
+//     startTimer();
+// }
+
+let moletime;
+const urlParams = new URLSearchParams(window.location.search);
+
+const difficulty = urlParams.get('difficulty');
+console.log(difficulty);
+
+if (difficulty === 'easy') {
+    moletime = 1000;
+} else if (difficulty === 'medium') {
+    moletime = 600;
+} else if (difficulty === 'hard') {
+    moletime = 400;
+   
+}
+
+// document.getElementById("startButton").addEventListener("click", function() {
+//     startGame();
+// });
+
+function startGame() {
+    setgame(moletime);
+    startTimer();
+}
+
+let gameStarted = false; 
+
+document.getElementById("startButton").addEventListener("click", function() {
+    if (!gameStarted) { 
+        startGame();
+        gameStarted = true; 
+        document.getElementById("startButton").disabled = true; 
+    }
+});
+
+</script>
+   
+</html>

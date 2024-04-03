@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Page</title>
+    <style>
+        body {
+            
+            margin-top: 60px;
+            font-family: Arial, sans-serif;
+            background-color: #64b1ec;
+            text-align: center;
+            padding-top: 10vh; 
+        }
+        
+        h1 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #000000;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #666fb3;
+            color: white;
+            border: none;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 10px;
+        }
+        
+        button:hover {
+            background-color: #30a2a3;
+        }
+        .all {   
+            height: 300px;
+            width: 600px;
+            border: 3px solid white;
+            border-radius: 15px;
+            background-color: rgba(177, 124, 223, 0.81);
+            margin:  auto; /* Center the container */
+        }
+        
+        h1{
+            font-size: 50px;
+            
+        }
+        img{
+            height: 100px;
+
+        }
+        .inline {
+            display: flex; 
+            align-items: center; 
+            height: 150px;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+   <div class="inline">
+    <u><h1>Whac-A-Mole</h1></u>
+    <img src="hammer.png" alt="">
+   </div>
+    <div class="all">
+        <br>
+        <h1>Welcome</h1>
+        <h4>Please select difficulty level!</h4>
+        <button onclick="openGame('easy')">Easy</button>
+        <button onclick="openGame('medium')">Medium</button>
+        <button onclick="openGame('hard')">Hard</button>
+    </div>
+    <script>
+        function openGame(difficulty) {
+            window.location.href = `startt.html?difficulty=${difficulty}`; ///  template literal string
+        }
+    </script>
+</body>
+</html>
